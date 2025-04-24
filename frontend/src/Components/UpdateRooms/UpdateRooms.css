@@ -1,0 +1,89 @@
+/* UpdateRooms.css */
+
+
+.page-container {
+  min-height: 100vh; 
+  background-color: #d7e6f9f0; 
+  padding: 20px; 
+}
+
+
+/* Container for the form */
+.update-room-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 7px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Form title */
+.update-room-container h1 {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Form group (label + input) */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Form labels */
+.form-group label {
+  display: block;
+  font-size: 16px;
+  color: #14062b;
+  margin-bottom: 8px;
+}
+
+/* Form inputs */
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+}
+
+/* Submit button */
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #0b2644;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .update-room-container {
+    padding: 15px;
+  }
+
+  .form-group input {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .submit-button {
+    padding: 10px;
+    font-size: 14px;
+  }
+}

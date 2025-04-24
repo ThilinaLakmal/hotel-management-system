@@ -3,13 +3,13 @@
     justify-content: center;
     align-items: center;
     padding: 22px 27px;
-    background-color: #9c6133; /* Brown color */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #595bf2; 
+    box-shadow: 0 2px 4px rgba(17, 14, 5, 0.3);
 }
 
 .hotel-name {
-    font-size: 24px;
+    font-size: 40px;
     font-weight: bold;
-    color: #FFF; /* White color for text */
+    color: #261845; 
     text-transform: uppercase;
 }

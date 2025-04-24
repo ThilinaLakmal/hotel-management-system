@@ -38,7 +38,7 @@ const roomSchema = new Schema({
         required:true,
     },
 
-    imageUrl:{ 
+    image:{ 
         type:String,
         required:true,
     },

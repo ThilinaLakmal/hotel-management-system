@@ -1,67 +1,164 @@
-import React, { useState, useEffect } from 'react';
-import Nav from "../Nav/Nav";
+
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import RoomDetails from "../RoomDetails/RoomDetails";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import "./AddRooms.css";
+import Nav from "../Nav/Nav"; // Import the Nav component
 
-const URL = "http://localhost:5000/Rooms/";
+function AddRoom() {
+  const navigate = useNavigate();
+  const [inputs, setInputs] = useState({
+    roomNumber: "",
+    roomType: "",
+    pricePerNight: "",
+    features: "",
+    capacity: "",
+    status: "",
+    description: "",
+    imageUrl: "",
+  });
 
-const fetchHandler = async () => {
-  try {
-    const response = await axios.get(URL);
-    return response.data.Room; // Ensure this matches the backend response structure
-  } catch (error) {
-    console.error("Error fetching rooms:", error);
-    return []; // Return an empty array if there's an error
-  }
-};
+  // Handle input changes
+  const handleChange = (e) => {
+    setInputs((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-function Room() {
-  const [rooms, setRooms] = useState([]);
-  const history = useNavigate(); // Initialize useNavigate for redirection
-
-  useEffect(() => {
-    fetchHandler().then((data) => {
-      if (Array.isArray(data)) {
-        setRooms(data); // Set rooms only if data is an array
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token"); 
+      const response = await axios.post(
+        "http://localhost:5000/Rooms/",
+        {
+          roomNumber: String(inputs.roomNumber),
+          roomType: String(inputs.roomType),
+          pricePerNight: Number(inputs.pricePerNight),
+          features: String(inputs.features),
+          capacity: String(inputs.capacity),
+          status: String(inputs.status),
+          description: String(inputs.description),
+          imageUrl: String(inputs.imageUrl),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+      alert("Room added successfully!"); 
+      navigate("/Roomdetails"); 
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        alert(error.response.data.message); 
       } else {
-        console.error("Expected an array but got:", data);
-        setRooms([]); // Fallback to an empty array
+        alert("An error occurred. Please try again."); 
       }
-    });
-  }, []);
-
-
- 
+    }
+  };
 
   return (
-    <div>
+    <div className="page-container">
       <Nav />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
-        <h1>Availabe Rooms</h1>
-        <button
-          onClick={() => history("/AddRooms")} // Redirect to the Add Room form
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-        >
-          Add Room
-        </button>
-      </div>
-      <div>
-        {rooms.map((room, i) => (
-          <div key={i}>
-            <RoomDetails room={room} />
+      <div className="add-room-container">
+        <h1>Add a new room</h1>
+        <form className="add-room-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Room Number</label>
+            <input
+              type="text"
+              name="roomNumber"
+              onChange={handleChange}
+              value={inputs.roomNumber}
+              required
+            />
           </div>
-        ))}
+
+          <div className="form-group">
+            <label>Room Type</label>
+            <input
+              type="text"
+              name="roomType"
+              onChange={handleChange}
+              value={inputs.roomType}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Price Per Night</label>
+            <input
+              type="number"
+              name="pricePerNight"
+              onChange={handleChange}
+              value={inputs.pricePerNight}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Features</label>
+            <input
+              type="text"
+              name="features"
+              onChange={handleChange}
+              value={inputs.features}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Capacity</label>
+            <input
+              type="text"
+              name="capacity"
+              onChange={handleChange}
+              value={inputs.capacity}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Status</label>
+            <input
+              type="text"
+              name="status"
+              onChange={handleChange}
+              value={inputs.status}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Description</label>
+            <input
+              type="text"
+              name="description"
+              onChange={handleChange}
+              value={inputs.description}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Image URL</label>
+            <input
+              type="text"
+              name="imageUrl"
+              onChange={handleChange}
+              value={inputs.imageUrl}
+              required
+            />
+          </div>
+
+          <button type="submit" className="submit-button">Submit</button>
+        </form>
       </div>
     </div>
   );
 }
 
-export default Room;
+export default AddRoom;

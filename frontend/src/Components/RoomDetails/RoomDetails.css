@@ -1,0 +1,137 @@
+/* RoomDetails.css */
+
+/* Container for the entire page */
+.room-details-page {
+    padding: 20px;
+    background-color: #d7e6f9f0; /* Light gray background */
+    min-height: 100vh; /* Full height of the viewport */
+  }
+  
+  /* Header section with the title and "Add Room" button */
+  .room-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .room-details-header h1 {
+    font-size: 28px;
+    color: #333; /* Dark gray text */
+    margin: 0;
+  }
+  
+  /* "Add Room" button */
+  .add-room-button {
+    padding: 15px 30px; /* Increased padding */
+    background-color: #110743; /* Blue background */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 1px;
+    font-size: 27px; /* Increased font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 200px; /* Adjust width as needed */
+    height: 60px; /* Adjust height as needed */
+}
+  
+  .add-room-button:hover {
+    background-color: #1d085a; /* Darker blue on hover */
+  }
+  
+  /* Container for each room card */
+  .room-card {
+    background-color: #ffffff; /* White background */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Room details inside the card */
+  .room-card h2 {
+    font-size: 24px;
+    color: #007bff; /* Blue text for the room number */
+    margin-bottom: 15px;
+  }
+  
+  .room-card p {
+    font-size: 19px;
+    color: #555; /* Medium gray text */
+    margin: 8px 0;
+  }
+  
+  .room-card p strong {
+    color: #333; /* Dark gray text for labels */
+  }
+  
+  /* Container for action buttons (Update and Delete) */
+  .room-actions {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px;
+  }
+  
+  /* Update and Delete buttons */
+  .update-button,
+  .delete-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .update-button {
+    background-color: #28a745; /* Green background for Update */
+    color: #fff; /* White text */
+  }
+  
+  .update-button:hover {
+    background-color: #218838; /* Darker green on hover */
+  }
+  
+  .delete-button {
+    background-color: #dc3545; /* Red background for Delete */
+    color: #fff; /* White text */
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+  }
+  
+  /* Message when no rooms are found */
+  .no-rooms-message {
+    text-align: center;
+    font-size: 18px;
+    color: #777; /* Light gray text */
+    margin-top: 20px;
+  }
+  
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+    .room-details-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    .room-card {
+      padding: 15px;
+    }
+  
+    .room-card h2 {
+      font-size: 20px;
+    }
+  
+    .room-card p {
+      font-size: 14px;
+    }
+  
+    .update-button,
+    .delete-button {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  }

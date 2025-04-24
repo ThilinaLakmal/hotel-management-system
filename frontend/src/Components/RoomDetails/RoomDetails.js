@@ -1,40 +1,120 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-//import './RoomDetails.css';
+import React, { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Nav from "../Nav/Nav";
+import "./RoomDetails.css";
 
-function RoomDetails(props) {
-  const { _id, roomNumber, roomType, pricePerNight, features, capacity, status, description, imageUrl } = props.room || {};
+const CACHE_KEY = "cachedRooms";
+const API_TIMEOUT = 3000;
 
-  if (!props.room) {
-    return <div>Loading...</div>;
-  }
+function Roomdetails() {
+  const [rooms, setRooms] = useState([]);
+  const navigate = useNavigate();
 
-  const deleteHandler = async () => {
+  const fetchRooms = useCallback(async (signal) => {
+    const token = localStorage.getItem("token");
+    if (!token) return navigate("/login");
+
     try {
-      await axios.delete(`http://localhost:5000/Rooms/${_id}`);
-      window.location.reload();
+      const { data } = await axios.get("http://localhost:5000/Rooms/", {
+        headers: { Authorization: `Bearer ${token}` },
+        timeout: API_TIMEOUT,
+        signal
+      });
+      const validRooms = data?.Room || [];
+      setRooms(validRooms);
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(validRooms));
     } catch (error) {
-      console.error('Error deleting room:', error);
+      if (error.name !== "CanceledError") {
+        console.error("Fetch error:", error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
+      }
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    
+    // Load cached data immediately
+    const cachedData = sessionStorage.getItem(CACHE_KEY);
+    if (cachedData) setRooms(JSON.parse(cachedData));
+    
+    // Fetch fresh data
+    fetchRooms(controller.signal);
+
+    return () => controller.abort();
+  }, [fetchRooms]);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this room?")) return;
+    
+    try {
+      await axios.delete(`http://localhost:5000/Rooms/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      setRooms(prev => prev.filter(r => r._id !== id));
+      sessionStorage.removeItem(CACHE_KEY);
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Failed to delete room");
     }
   };
 
   return (
-    <div className="room-details">
-      <h2>Room Number: {roomNumber}</h2>
-      <p><strong>Room Type:</strong> {roomType}</p>
-      <p><strong>Price:</strong> {pricePerNight}</p>
-      <p><strong>Features:</strong> {features}</p>
-      <p><strong>Capacity:</strong> {capacity}</p>
-      <p><strong>Status:</strong> {status}</p>
-      <p><strong>Description:</strong> {description}</p>
-      <p><strong>Image URL:</strong> {imageUrl}</p>
-      <div className="room-actions">
-        <Link to={`/Roomdetails/${_id}`} className="update-button">Update</Link>
-        <button onClick={deleteHandler} className="delete-button">Delete</button>
+    <div className="room-details-page">
+      <Nav />
+      <div className="room-details-header">
+        <h1>Available Rooms</h1>
+        <button onClick={() => navigate("/AddRooms")} className="add-room-button">
+          Add Room
+        </button>
+      </div>
+
+      <div className="room-cards-container">
+        {rooms.map(room => (
+          <RoomCard 
+            key={room._id} 
+            room={room} 
+            onEdit={() => navigate(`/UpdateRooms/${room._id}`)}
+            onDelete={() => handleDelete(room._id)}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-export default RoomDetails;
+const RoomCard = React.memo(({ room, onEdit, onDelete }) => (
+  <div className="room-card">
+    <div className="room-image">
+      {room.image ? (
+        <img 
+          src={room.image} 
+          alt={`Room ${room.roomNumber}`}
+          loading="lazy"
+          onError={(e) => (e.target.src = "path_to_default_image.jpg")}
+        />
+      ) : (
+        <div className="no-image">No Image Available</div>
+      )}
+    </div>
+    <div className="room-info">
+      <h2>Room {room.roomNumber}</h2>
+      <p><strong>Type:</strong> {room.roomType}</p>
+      <p><strong>Price:</strong> LKR {room.pricePerNight?.toLocaleString()} /=</p>
+      <p><strong>Features:</strong> {room.features}</p>
+      <p><strong>Capacity:</strong> {room.capacity}</p>
+      <p><strong>Status:</strong> <span className={`status-${room.status?.toLowerCase()}`}>{room.status}</span></p>
+      <p><strong>Description:</strong> {room.description}</p>
+    </div>
+    <div className="room-actions">
+      <button onClick={onEdit} className="update-button">Edit</button>
+      <button onClick={onDelete} className="delete-button">Delete</button>
+    </div>
+  </div>
+));
+
+export default React.memo(Roomdetails);
