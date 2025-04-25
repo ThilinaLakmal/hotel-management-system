@@ -2,136 +2,381 @@
 
 /* Container for the entire page */
 .room-details-page {
-    padding: 20px;
-    background-color: #d7e6f9f0; /* Light gray background */
-    min-height: 100vh; /* Full height of the viewport */
-  }
-  
-  /* Header section with the title and "Add Room" button */
-  .room-details-header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f6f8fa;
+}
+
+.room-details-container {
+    flex: 1;
+    background-color: #f6f8fa;
+}
+
+/* Header section with the title */
+.room-details-header {
+    position: relative;
+    height: 220px;
+    background: #1a202c;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    text-align: center;
+}
+
+/* Enhanced animated background */
+.room-details-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(66, 153, 225, 0.2) 0%, transparent 70%),
+        radial-gradient(circle at 80% 30%, rgba(49, 130, 206, 0.25) 0%, transparent 70%);
+    animation: pulseBackground 4s ease-in-out infinite;
+}
+
+/* Enhanced animated lines */
+.room-details-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(90deg, transparent 0%, rgba(66, 153, 225, 0.2) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    transform: skewY(-8deg);
+}
+
+@keyframes pulseBackground {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.5; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { background-position: 200% 0; opacity: 0.3; }
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem;
+}
+
+.room-details-header h1 {
+    position: relative;
+    color: white;
+    font-size: 3.5rem;
+    margin: 0;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    background: linear-gradient(45deg, #63B3ED, #4299E1, #2B6CB0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientText 4s ease infinite;
+}
+
+.room-details-header h1::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(45deg, #63B3ED, #4299E1, #2B6CB0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.4;
+    filter: blur(20px);
+    animation: glowPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+    from {
+        opacity: 0.4;
+        filter: blur(20px);
+        transform: scale(1);
+    }
+    to {
+        opacity: 0.7;
+        filter: blur(25px);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes gradientText {
+    0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+    50% { background-position: 100% 50%; filter: hue-rotate(20deg); }
+    100% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+}
+
+.room-details-header p {
+    color: #A0AEC0;
+    font-size: 1.3rem;
+    margin-top: 1rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.3s;
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced decorative side lines */
+.header-content::before,
+.header-content::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4299E1 50%, transparent);
+    transform: translateY(-50%);
+    animation: pulseLine 2s ease-in-out infinite;
+}
+
+.header-content::before {
+    left: -140px;
+    animation: expandLine 1s ease-out forwards, pulseLine 2s ease-in-out infinite;
+}
+
+.header-content::after {
+    right: -140px;
+    animation: expandLine 1s ease-out forwards, pulseLine 2s ease-in-out infinite;
+}
+
+@keyframes expandLine {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 120px;
+        opacity: 1;
+    }
+}
+
+@keyframes pulseLine {
+    0% { opacity: 0.3; transform: translateY(-50%) scaleX(0.8); }
+    50% { opacity: 1; transform: translateY(-50%) scaleX(1.2); }
+    100% { opacity: 0.3; transform: translateY(-50%) scaleX(0.8); }
+}
+
+/* Floating particles effect */
+.particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(66, 153, 225, 0.2);
+    border-radius: 50%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .room-details-header {
+        height: 180px;
+    }
+
+    .room-details-header h1 {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+    }
+
+    .room-details-header p {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    .header-content::before,
+    .header-content::after {
+        width: 60px;
+    }
+}
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.room-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.room-image {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.room-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.room-info {
+    padding: 1.5rem;
+}
+
+.room-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .room-details-header h1 {
-    font-size: 28px;
-    color: #333; /* Dark gray text */
-    margin: 0;
-  }
-  
-  /* "Add Room" button */
-  .add-room-button {
-    padding: 15px 30px; /* Increased padding */
-    background-color: #110743; /* Blue background */
-    color: #fff; /* White text */
-    border: none;
-    border-radius: 1px;
-    font-size: 27px; /* Increased font size */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 200px; /* Adjust width as needed */
-    height: 60px; /* Adjust height as needed */
+    margin-bottom: 1.5rem;
 }
-  
-  .add-room-button:hover {
-    background-color: #1d085a; /* Darker blue on hover */
-  }
-  
-  /* Container for each room card */
-  .room-card {
-    background-color: #ffffff; /* White background */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Subtle shadow */
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  
-  /* Room details inside the card */
-  .room-card h2 {
-    font-size: 24px;
-    color: #007bff; /* Blue text for the room number */
-    margin-bottom: 15px;
-  }
-  
-  .room-card p {
-    font-size: 19px;
-    color: #555; /* Medium gray text */
-    margin: 8px 0;
-  }
-  
-  .room-card p strong {
-    color: #333; /* Dark gray text for labels */
-  }
-  
-  /* Container for action buttons (Update and Delete) */
-  .room-actions {
+
+.room-header h2 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin: 0;
+}
+
+.room-price {
+    font-size: 1.25rem;
+    color: #48bb78;
+    font-weight: 600;
+}
+
+.room-details-grid {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 0;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.room-details-grid p {
+    margin: 0;
+    color: #4a5568;
+}
+
+.room-description {
+    color: #718096;
+    margin-bottom: 1.5rem;
+}
+
+.room-actions {
     display: flex;
-    gap: 10px; /* Space between buttons */
-    margin-top: 20px;
-  }
-  
-  /* Update and Delete buttons */
-  .update-button,
-  .delete-button {
-    padding: 10px 20px;
+    gap: 1rem;
+}
+
+.edit-button, .delete-button {
+    flex: 1;
+    padding: 0.75rem;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .update-button {
-    background-color: #28a745; /* Green background for Update */
-    color: #fff; /* White text */
-  }
-  
-  .update-button:hover {
-    background-color: #218838; /* Darker green on hover */
-  }
-  
-  .delete-button {
-    background-color: #dc3545; /* Red background for Delete */
-    color: #fff; /* White text */
-  }
-  
-  .delete-button:hover {
-    background-color: #c82333; /* Darker red on hover */
-  }
-  
-  /* Message when no rooms are found */
-  .no-rooms-message {
+    transition: background-color 0.2s;
+}
+
+.edit-button {
+    background: #4299e1;
+    color: white;
+}
+
+.edit-button:hover {
+    background: #3182ce;
+}
+
+.delete-button {
+    background: #f56565;
+    color: white;
+}
+
+.delete-button:hover {
+    background: #e53e3e;
+}
+
+.status-available {
+    color: #48bb78;
+    background: #f0fff4;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.status-booked {
+    color: #e53e3e;
+    background: #fff5f5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.loading-container {
     text-align: center;
-    font-size: 18px;
-    color: #777; /* Light gray text */
-    margin-top: 20px;
-  }
-  
-  /* Responsive design for smaller screens */
-  @media (max-width: 768px) {
-    .room-details-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-  
-    .room-card {
-      padding: 15px;
-    }
-  
-    .room-card h2 {
-      font-size: 20px;
-    }
-  
-    .room-card p {
-      font-size: 14px;
-    }
-  
-    .update-button,
-    .delete-button {
-      padding: 8px 16px;
-      font-size: 14px;
-    }
-  }
+    padding: 4rem 2rem;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 1rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-container {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.error-message {
+    color: #e53e3e;
+    margin-bottom: 1rem;
+}
+
+.retry-button {
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}

@@ -7,6 +7,9 @@ import Nav from "../Nav/Nav";
 function UpdateRooms() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const [room, setRoom] = useState({
     roomNumber: "",
     roomType: "",
@@ -23,19 +26,32 @@ function UpdateRooms() {
   useEffect(() => {
     const fetchRoomData = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const token = localStorage.getItem("token");
+        
+        if (!token) {
+          navigate("/Login");
+          return;
+        }
+
         const response = await axios.get(`http://localhost:5000/Rooms/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const roomData = response.data;
         
+        const roomData = response.data;
         setRoom({
           ...roomData,
-          imagePreview: roomData.image // Set the image preview from stored image
+          imagePreview: roomData.image
         });
       } catch (error) {
-        alert("Error loading room data: " + error.message);
-        navigate("/Roomdetails");
+        console.error("Error loading room data:", error);
+        setError(error.response?.data?.message || "Failed to load room data");
+        if (error.response?.status === 401) {
+          navigate("/Login");
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchRoomData();
@@ -52,6 +68,11 @@ function UpdateRooms() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        alert("Image size should be less than 5MB");
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setRoom(prev => ({
@@ -64,38 +85,79 @@ function UpdateRooms() {
     }
   };
 
+  const validateForm = () => {
+    if (!room.roomNumber.trim()) return "Room number is required";
+    if (!room.roomType) return "Room type is required";
+    if (!room.pricePerNight || room.pricePerNight <= 0) return "Valid price is required";
+    if (!room.features.trim()) return "Features are required";
+    if (!room.capacity || room.capacity <= 0) return "Valid capacity is required";
+    if (!room.status) return "Status is required";
+    if (!room.description.trim()) return "Description is required";
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const validationError = validateForm();
+    if (validationError) {
+      alert(validationError);
+      return;
+    }
+
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem("token");
       
-      // Prepare data for submission
       const updatedRoom = {
-        roomNumber: room.roomNumber,
+        roomNumber: room.roomNumber.trim(),
         roomType: room.roomType,
         pricePerNight: Number(room.pricePerNight),
-        features: room.features,
-        capacity: room.capacity,
+        features: room.features.trim(),
+        capacity: Number(room.capacity),
         status: room.status,
-        description: room.description,
+        description: room.description.trim(),
         image: room.image
       };
       
       await axios.put(`http://localhost:5000/Rooms/${id}`, updatedRoom, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
       alert("Room updated successfully!");
       navigate("/Roomdetails");
     } catch (error) {
-      alert(error.response?.data?.message || "Update failed");
+      console.error("Error updating room:", error);
+      setError(error.response?.data?.message || "Failed to update room");
+      if (error.response?.status === 401) {
+        navigate("/Login");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="page-container">
+        <Nav />
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading room data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">
       <Nav />
       <div className="update-room-container">
         <h1>Update Room</h1>
+        {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Room Number</label>
@@ -105,6 +167,7 @@ function UpdateRooms() {
               value={room.roomNumber}
               onChange={handleChange}
               required
+              placeholder="Enter room number"
             />
           </div>
 
@@ -125,7 +188,7 @@ function UpdateRooms() {
           </div>
 
           <div className="form-group">
-            <label>Price Per Night</label>
+            <label>Price Per Night (LKR)</label>
             <input
               type="number"
               name="pricePerNight"
@@ -133,22 +196,24 @@ function UpdateRooms() {
               onChange={handleChange}
               min="0"
               required
+              placeholder="Enter price per night"
             />
           </div>
 
           <div className="form-group">
-            <label>Features</label>
+            <label>Features (comma separated)</label>
             <input
               type="text"
               name="features"
               value={room.features}
               onChange={handleChange}
               required
+              placeholder="e.g., WiFi, AC, TV, Mini Bar"
             />
           </div>
 
           <div className="form-group">
-            <label>Capacity</label>
+            <label>Capacity (persons)</label>
             <input
               type="number"
               name="capacity"
@@ -156,6 +221,7 @@ function UpdateRooms() {
               onChange={handleChange}
               min="1"
               required
+              placeholder="Enter room capacity"
             />
           </div>
 
@@ -181,6 +247,8 @@ function UpdateRooms() {
               value={room.description}
               onChange={handleChange}
               required
+              placeholder="Enter room description"
+              rows="4"
             />
           </div>
 
@@ -194,13 +262,21 @@ function UpdateRooms() {
             />
             {room.imagePreview && (
               <div className="image-preview">
-                <img src={room.imagePreview} alt="Room preview" style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }} />
+                <img 
+                  src={room.imagePreview} 
+                  alt="Room preview" 
+                  style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }} 
+                />
               </div>
             )}
           </div>
 
-          <button type="submit" className="submit-button">
-            Update Room
+          <button 
+            type="submit" 
+            className="submit-button" 
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Updating...' : 'Update Room'}
           </button>
         </form>
       </div>
