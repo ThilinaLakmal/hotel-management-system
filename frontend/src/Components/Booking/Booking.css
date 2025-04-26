@@ -296,84 +296,253 @@
   }
 }
 
-/* Booking Confirmation Styles */
+/* Luxury Booking Confirmation Styles */
 .booking-confirmation {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 30px;
   max-width: 800px;
-  margin: 20px auto;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  padding: 3rem;
+  background: white;
+  border-radius: 2px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-confirmation::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #c6a136, #dfc56d, #c6a136);
 }
 
 .confirmation-header {
   text-align: center;
-  margin-bottom: 30px;
-  color: #1a237e;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  position: relative;
+}
+
+.confirmation-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, #c6a136, #dfc56d, #c6a136);
 }
 
 .confirmation-header h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
+  color: #1a202c;
+  font-size: 2.2rem;
+  margin-bottom: 0.75rem;
+  font-family: "Playfair Display", serif;
+  letter-spacing: 1px;
 }
 
-.confirmation-header h3 {
-  font-size: 20px;
-  color: #303f9f;
+.confirmation-header p {
+  color: #4a5568;
+  font-size: 1.1rem;
+  font-style: italic;
 }
 
-.confirmation-details {
-  background-color: white;
-  padding: 20px;
-  border-radius: 6px;
-  margin-bottom: 30px;
+.booking-summary {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 650px;
 }
 
-.confirmation-details h4 {
-  color: #1a237e;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 18px;
+.summary-section {
+  background: #fcfcfc;
+  padding: 1.75rem;
+  border-radius: 2px;
+  border: 1px solid #edf2f7;
+  position: relative;
+}
+
+.summary-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #c6a136, #dfc56d);
+}
+
+.summary-section h3 {
+  color: #1a202c;
+  margin-bottom: 1.25rem;
+  font-size: 1.2rem;
+  font-family: "Playfair Display", serif;
+  letter-spacing: 0.5px;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #edf2f7;
+  position: relative;
 }
 
 .detail-row {
   display: flex;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
-}
-
-.detail-row:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
 }
 
 .detail-label {
-  font-weight: bold;
-  width: 150px;
-  color: #555;
+  color: #4a5568;
+  font-weight: 500;
+  flex: 1;
 }
 
 .detail-value {
+  color: #1a202c;
+  font-weight: 500;
+  text-align: right;
   flex: 1;
-  color: #333;
 }
 
-.confirmation-ok-button {
-  display: block;
-  width: 100px;
-  margin: 0 auto;
-  padding: 10px;
-  background-color: #1a237e;
+.payment-details {
+  background: #fffef8;
+  border: 1px solid #dfc56d;
+}
+
+.payment-details::before {
+  background: #c6a136;
+}
+
+.total-amount {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #edf2f7;
+}
+
+.total-amount .detail-label {
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.total-amount .detail-value {
+  color: #c6a136;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.confirmation-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.print-button, .home-button {
+  padding: 0.75rem 2rem;
+  border-radius: 2px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+}
+
+.print-button {
+  background: #c6a136;
   color: white;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
 }
 
-.confirmation-ok-button:hover {
-  background-color: #303f9f;
+.print-button:hover {
+  background: #b18d24;
+  transform: translateY(-1px);
+}
+
+.home-button {
+  background: white;
+  color: #c6a136;
+  border: 1px solid #c6a136;
+}
+
+.home-button:hover {
+  background: #fff8e5;
+}
+
+/* Print Styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+
+  body {
+    background: white;
+  }
+
+  .booking-confirmation {
+    max-width: 100%;
+    margin: 0;
+    padding: 20px;
+    box-shadow: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .confirmation-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+  }
+
+  .confirmation-header h2 {
+    font-size: 24px;
+  }
+
+  .booking-summary {
+    gap: 15px;
+  }
+
+  .summary-section {
+    padding: 15px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .summary-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .detail-row {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .total-amount .detail-value {
+    font-size: 16px;
+  }
+
+  .confirmation-actions,
+  .nav,
+  button {
+    display: none !important;
+  }
+
+  /* Add hotel branding for print */
+  .booking-confirmation::after {
+    content: "Nature's Lake View";
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: #c6a136;
+    opacity: 0.5;
+    font-size: 14px;
+  }
 }

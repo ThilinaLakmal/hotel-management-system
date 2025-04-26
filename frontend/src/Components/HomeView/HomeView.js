@@ -99,37 +99,30 @@ function HomeView() {
       }
 
       try {
-        const { data } = await axios.get("http://localhost:5000/Rooms/", {
+        const response = await axios.get("http://localhost:5000/Rooms", {
           headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          timeout: API_TIMEOUT,
-          signal
+            Authorization: `Bearer ${token}`
+          }
         });
 
-        const validRooms = data?.Room || [];
-        setRooms(validRooms);
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify(validRooms));
+        if (response.data && response.data.Room) {
+          setRooms(response.data.Room);
+          sessionStorage.setItem(CACHE_KEY, JSON.stringify(response.data.Room));
+        } else {
+          setError("No rooms available at the moment.");
+        }
       } catch (apiError) {
         console.error("API Error:", apiError);
-        // Try to get cached data if API fails
         const cachedData = sessionStorage.getItem(CACHE_KEY);
         if (cachedData) {
           setRooms(JSON.parse(cachedData));
         } else {
-          setError("Failed to load rooms. Please try again later.");
+          setError("Unable to load rooms. Please try again.");
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        navigate("/Login");
-      } else {
-        setError("Failed to load rooms. Please try again later.");
-      }
+      setError("Failed to load rooms. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -163,8 +156,8 @@ function HomeView() {
     });
   }, [navigate]);
 
-  // Simplified but complete RoomCard component
-  const RoomCard = React.memo(({ room, onBookNow }) => (
+  // Room card component with book now button for all rooms
+  const RoomCard = React.memo(({ room }) => (
     <div className="room-card">
       <div className="room-image">
         {room.image ? (
@@ -200,16 +193,17 @@ function HomeView() {
           </p>
         </div>
         
-        <p className="room-description"><strong>Description:</strong> {room.description}</p>
+        <p className="room-description">
+          <strong>Description:</strong> {room.description}
+        </p>
         
-        {room.status?.toLowerCase() === 'available' && (
-          <button 
-            onClick={() => onBookNow(room._id)}
-            className="book-now-button"
-          >
-            BOOK NOW
-          </button>
-        )}
+        <button 
+          onClick={() => room.status?.toLowerCase() === 'available' ? handleBookNow(room._id) : null}
+          className={`book-now-button ${room.status?.toLowerCase() !== 'available' ? 'disabled' : ''}`}
+          disabled={room.status?.toLowerCase() !== 'available'}
+        >
+          {room.status?.toLowerCase() === 'available' ? 'BOOK NOW' : 'NOT AVAILABLE'}
+        </button>
       </div>
     </div>
   ));
@@ -239,7 +233,7 @@ function HomeView() {
       ) : error ? (
         <div className="error-container">
           <p className="error-message">{error}</p>
-          <button onClick={() => window.location.reload()} className="retry-button">
+          <button onClick={() => fetchRooms()} className="retry-button">
             Try Again
           </button>
         </div>
@@ -252,8 +246,7 @@ function HomeView() {
           {rooms.map(room => (
             <RoomCard 
               key={room._id} 
-              room={room} 
-              onBookNow={handleBookNow}
+              room={room}
             />
           ))}
         </div>
