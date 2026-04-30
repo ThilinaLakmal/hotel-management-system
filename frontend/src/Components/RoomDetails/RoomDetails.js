@@ -105,7 +105,7 @@ function RoomDetails() {
       <div className="room-details-container">
         <div className="room-details-header">
           <div className="header-content">
-            <h1 data-text="Room Management">Room Management</h1>
+            <h1 data-text="Room Management">Rooms Management</h1>
             <p>Efficiently manage and organize hotel rooms</p>
           </div>
         </div>

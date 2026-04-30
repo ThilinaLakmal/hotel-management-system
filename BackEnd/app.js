@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const roomRouter = require("./Routes/RoomRoute");
 const bookingRouter = require("./Routes/BookingRoute");
 const cors = require("cors");
+require('dotenv').config();
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use("/api/bookings", bookingRouter); // Add this line
 
 // Connect to MongoDB
 mongoose
-  .connect("mongodb+srv://manager:v6p8Ehb1LkacAXyg@cluster0.qvue5.mongodb.net/")
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB"))
   .then(() => {
     app.listen(5000);
