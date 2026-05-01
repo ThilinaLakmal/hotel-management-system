@@ -7,6 +7,10 @@ const bookingSchema = new Schema({
     ref: 'RoomModel',
     required: true
   },
+  userId: {
+    type: String,
+    required: true
+  },
   checkInDate: {
     type: Date,
     required: true

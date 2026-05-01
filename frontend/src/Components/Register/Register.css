@@ -1,4 +1,4 @@
-.page-container {
+.register-page-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-.page-container::before {
+.register-page-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -21,10 +21,10 @@
   z-index: 1;
 }
 
-.login-container {
+.register-container {
   position: relative;
   z-index: 2;
-  max-width: 500px;
+  max-width: 520px;
   margin: auto;
   padding: 2.5rem;
   background: rgba(255, 255, 255, 0.92);
@@ -32,55 +32,55 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  animation: fadeIn 1s ease-out;
+  animation: registerFadeIn 1s ease-out;
 }
 
-.hotel-brand {
+.register-container .hotel-brand {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-.hotel-logo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 0.8rem;
+.register-container .hotel-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 0.6rem;
   border-radius: 50px;
-  padding: 8px;
+  padding: 6px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.brand-name {
+.register-container .brand-name {
   font-family: 'Playfair Display', serif;
-  font-size: 2.4rem;
+  font-size: 2rem;
   color: #1a365d;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.brand-tagline {
+.register-container .brand-tagline {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #4a5568;
   font-style: italic;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.form-group {
-  margin-bottom: 1.8rem;
+.register-form-group {
+  margin-bottom: 1.4rem;
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.form-group label {
+.register-form-group label {
   display: block;
   color: #1a365d;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-family: 'Inter', sans-serif;
   position: absolute;
-  top: -1.4rem;
+  top: -1.2rem;
   left: 0.8rem;
   letter-spacing: 0.3px;
   text-transform: none;
@@ -88,35 +88,31 @@
   background: transparent;
 }
 
-.form-group label::after {
-  content: '';
-}
-
-.form-group input {
+.register-form-group input {
   width: 100%;
-  padding: 1rem 3.5rem 1rem 1.5rem;
+  padding: 0.9rem 3.5rem 0.9rem 1.2rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.9);
   color: #2d3748;
 }
 
-.form-group input::placeholder {
+.register-form-group input::placeholder {
   color: #a0aec0;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 400;
 }
 
-.form-group input:focus {
+.register-form-group input:focus {
   outline: none;
   border-color: #1a365d;
   box-shadow: 0 0 0 4px rgba(26, 54, 93, 0.1);
   transform: translateY(-2px);
 }
 
-.form-group input:focus + label {
+.register-form-group input:focus + label {
   color: #2c5282;
   font-weight: 600;
   opacity: 1;
@@ -124,15 +120,7 @@
   transition: all 0.3s ease;
 }
 
-.form-group:first-child {
-  margin-bottom: 2rem;
-}
-
-.form-group:last-of-type {
-  margin-bottom: 2rem;
-}
-
-.form-group .input-icon {
+.register-form-group .input-icon {
   position: absolute;
   right: 1.2rem;
   top: 50%;
@@ -143,23 +131,23 @@
   width: 24px;
   height: 24px;
   color: #1a365d;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   pointer-events: none;
 }
 
-.form-group input[type="password"] ~ .input-icon {
+.register-form-group .input-icon.clickable {
   pointer-events: auto;
   cursor: pointer;
 }
 
-.error-message {
+.register-container .error-message {
   color: #e53e3e;
   background-color: rgba(254, 215, 215, 0.9);
-  padding: 1rem;
+  padding: 0.8rem;
   border-radius: 12px;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border: 1px solid #fed7d7;
   animation: shake 0.5s ease-in-out;
   display: flex;
@@ -168,19 +156,19 @@
   gap: 0.5rem;
 }
 
-.error-message::before {
+.register-container .error-message::before {
   content: '⚠️';
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
-.login-button {
+.register-button {
   width: 100%;
-  padding: 1rem;
+  padding: 0.9rem;
   background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
   color: white;
   border: none;
   border-radius: 12px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -191,20 +179,20 @@
   margin-top: 0.5rem;
 }
 
-.login-button:hover {
+.register-button:hover {
   background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
 }
 
-.login-button:disabled {
+.register-button:disabled {
   background: #a0aec0;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-.login-button .button-content {
+.register-button .button-content {
   position: relative;
   z-index: 1;
   display: flex;
@@ -213,10 +201,10 @@
   gap: 0.5rem;
 }
 
-.additional-links {
+.register-container .additional-links {
   text-align: center;
-  margin-top: 1.8rem;
-  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   color: #4a5568;
   font-size: 0.95rem;
@@ -226,19 +214,19 @@
   gap: 0.5rem;
 }
 
-.additional-links a {
+.register-container .additional-links a {
   color: #1a365d;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
-.additional-links a:hover {
+.register-container .additional-links a:hover {
   color: #2c5282;
   text-decoration: underline;
 }
 
-@keyframes fadeIn {
+@keyframes registerFadeIn {
   from {
     opacity: 0;
     transform: translateY(30px) scale(0.9);
@@ -256,28 +244,28 @@
 }
 
 @media (max-width: 640px) {
-  .login-container {
+  .register-container {
     margin: 1rem;
-    padding: 2rem;
+    padding: 1.5rem;
     max-width: calc(100% - 2rem);
   }
 
-  .brand-name {
-    font-size: 2.2rem;
+  .register-container .brand-name {
+    font-size: 1.8rem;
   }
 
-  .brand-tagline {
+  .register-container .brand-tagline {
+    font-size: 0.9rem;
+  }
+
+  .register-form-group input {
+    padding: 0.85rem;
+    padding-right: 2.5rem;
+    font-size: 0.9rem;
+  }
+
+  .register-button {
+    padding: 0.85rem;
     font-size: 1rem;
-  }
-
-  .form-group input {
-    padding: 1rem;
-    padding-left: 2.5rem;
-    font-size: 1rem;
-  }
-
-  .login-button {
-    padding: 1rem;
-    font-size: 1.1rem;
   }
 }

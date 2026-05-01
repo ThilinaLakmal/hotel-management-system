@@ -4,8 +4,11 @@ import Roomdetails from "./Components/RoomDetails/RoomDetails";
 import AddRooms from "./Components/AdRooms/AddRooms";
 import UpdateRooms from "./Components/UpdateRooms/UpdateRooms";
 import Login from "./Components/Login/Login";
+import Register from "./Components/Register/Register";
 import HomeView from "./Components/HomeView/HomeView";
 import Booking from "./Components/Booking/Booking";
+import Profile from "./Components/Profile/Profile";
+import MyBookings from "./Components/MyBookings/MyBookings";
 
 function App() {
   const [authChecked, setAuthChecked] = useState(false);
@@ -23,7 +26,11 @@ function App() {
         navigate(role === "manager" ? "/RoomDetails" : "/HomeView");
       }
     } else {
-      navigate("/Login");
+      // Allow access to login and register without auth
+      const publicPaths = ["/Login", "/Register"];
+      if (!publicPaths.includes(window.location.pathname)) {
+        navigate("/Login");
+      }
     }
     setAuthChecked(true);
   }, [navigate]);
@@ -37,6 +44,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/Login" />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/Register" element={<Register />} />
 
         {/* Manager Routes */}
         {userRole === "manager" && (
@@ -52,6 +60,8 @@ function App() {
           <>
             <Route path="/HomeView" element={<HomeView />} />
             <Route path="/Booking/:roomId" element={<Booking />} />
+            <Route path="/Profile" element={<Profile />} />
+            <Route path="/MyBookings" element={<MyBookings />} />
           </>
         )}
         
@@ -59,7 +69,9 @@ function App() {
         <Route path="*" element={
           userRole === "manager" 
             ? <Navigate to="/Roomdetails" /> 
-            : <Navigate to="/HomeView" />
+            : userRole === "guest"
+            ? <Navigate to="/HomeView" />
+            : <Navigate to="/Login" />
         } />
       </Routes>
     </div>

@@ -112,6 +112,29 @@
     gap: 1rem;
 }
 
+.nav-user-name {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
 .nav-button {
     background: rgba(255, 255, 255, 0.1);
     color: white;

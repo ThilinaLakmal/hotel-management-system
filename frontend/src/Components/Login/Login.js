@@ -1,38 +1,23 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const USER_CREDENTIALS = {
-    manager: {
-      username: "manager",
-      password: "manager123",
-      role: "manager",
-      redirect: "/RoomDetails"
-    },
-    guest: {
-      username: "guest",
-      password: "guest123",
-      role: "guest",
-      redirect: "/HomeView"
-    }
-  };
-
   const handleChange = (e) => {
     setCredentials({
       ...credentials,
       [e.target.name]: e.target.value,
     });
-    // Clear error when user starts typing
     if (error) setError("");
   };
 
@@ -43,63 +28,65 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Check credentials
-    let authenticatedUser = null;
-    for (const user in USER_CREDENTIALS) {
-      if (
-        credentials.username === USER_CREDENTIALS[user].username &&
-        credentials.password === USER_CREDENTIALS[user].password
-      ) {
-        authenticatedUser = USER_CREDENTIALS[user];
-        break;
-      }
-    }
+    setError("");
 
-    if (authenticatedUser) {
-      localStorage.setItem("token", `${authenticatedUser.role}-auth-token`);
-      localStorage.setItem("role", authenticatedUser.role);
-      navigate(authenticatedUser.redirect, { replace: true });
-    } else {
-      setError("Invalid username or password. Please try again.");
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/login", {
+        email: credentials.email,
+        password: credentials.password,
+      });
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", response.data.user.role);
+        localStorage.setItem("userName", response.data.user.name);
+        localStorage.setItem("userEmail", response.data.user.email);
+        localStorage.setItem("userId", response.data.user.id);
+
+        if (response.data.user.role === "manager") {
+          navigate("/RoomDetails", { replace: true });
+        } else {
+          navigate("/HomeView", { replace: true });
+        }
+      }
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || "Login failed. Please try again.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
     <div className="page-container">
       <div className="login-container">
         <div className="hotel-brand">
-          <img 
-            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80" 
-            alt="Nature's Lake View" 
+          <img
+            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80"
+            alt="Nature's Lake View"
             className="hotel-logo"
           />
           <h1 className="brand-name">Nature's Lake View</h1>
           <p className="brand-tagline">Experience Luxury & Tranquility</p>
         </div>
-        
+
         {error && <div className="error-message">{error}</div>}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
               type="text"
-              name="username"
-              value={credentials.username}
+              name="email"
+              value={credentials.email}
               onChange={handleChange}
               required
-              placeholder="Enter your username"
-              autoComplete="username"
+              placeholder="Enter your email or 'manager'"
+              autoComplete="email"
             />
-            <label>Username</label>
-            <span className="input-icon">👤</span>
+            <label>Email</label>
+            <span className="input-icon">✉️</span>
           </div>
-          
+
           <div className="form-group">
             <input
               type={showPassword ? "text" : "password"}
@@ -111,17 +98,17 @@ function Login() {
               autoComplete="current-password"
             />
             <label>Password</label>
-            <span 
-              className="input-icon" 
-              style={{ cursor: 'pointer' }}
+            <span
+              className="input-icon"
+              style={{ cursor: "pointer" }}
               onClick={togglePasswordVisibility}
             >
-              {showPassword ? '👁️' : '🔒'}
+              {showPassword ? "👁️" : "🔒"}
             </span>
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="login-button"
             disabled={isLoading}
           >
@@ -142,9 +129,8 @@ function Login() {
         </form>
 
         <div className="additional-links">
-          <a href="#forgot-password">Forgot Password?</a>
-          <span>•</span>
-          <a href="#register">Create Account</a>
+          <span>Don't have an account?</span>
+          <Link to="/Register">Create Account</Link>
         </div>
       </div>
     </div>

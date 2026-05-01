@@ -6,6 +6,7 @@ const Nav = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const role = localStorage.getItem('role');
+  const userName = localStorage.getItem('userName');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +20,9 @@ const Nav = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userId');
     window.location.href = '/Login';
   };
 
@@ -33,9 +37,8 @@ const Nav = () => {
           {role === 'guest' && (
             <>
               <Link to="/HomeView" className="nav-link">Home</Link>
-              <Link to="#" className="nav-link">Rooms</Link>
-              <Link to="#" className="nav-link">Services</Link>
-              <Link to="#" className="nav-link">Contact</Link>
+              <Link to="/MyBookings" className="nav-link">My Bookings</Link>
+              <Link to="/Profile" className="nav-link">Profile</Link>
             </>
           )}
           
@@ -48,6 +51,12 @@ const Nav = () => {
         </div>
         
         <div className="nav-actions">
+          {userName && role === 'guest' && (
+            <span className="nav-user-name">
+              <span className="user-avatar-small">{userName.charAt(0).toUpperCase()}</span>
+              {userName}
+            </span>
+          )}
           <button className="nav-button" onClick={handleLogout}>
             Logout
           </button>

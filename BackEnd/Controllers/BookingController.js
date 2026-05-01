@@ -21,9 +21,10 @@ const createBooking = async (req, res) => {
       return res.status(400).json({ message: "Room is not available for booking" });
     }
 
-    // Create new booking
+    // Create new booking with userId from authenticated user
     const newBooking = new Booking({
       roomId,
+      userId: req.user.userId,
       checkInDate: new Date(checkInDate),
       checkOutDate: new Date(checkOutDate),
       guestName,
@@ -52,6 +53,107 @@ const createBooking = async (req, res) => {
   }
 };
 
+// Get all bookings for the authenticated user
+const getMyBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ userId: req.user.userId })
+      .populate('roomId')
+      .sort({ bookingDate: -1 });
+
+    res.status(200).json({ bookings });
+  } catch (error) {
+    console.error("Get bookings error:", error);
+    res.status(500).json({ message: "Failed to fetch bookings", error: error.message });
+  }
+};
+
+// Update a booking (only the booking owner can update)
+const updateBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { checkInDate, checkOutDate, guestName, guestPhone, specialRequests } = req.body;
+
+    const booking = await Booking.findById(id);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Check ownership
+    if (booking.userId.toString() !== req.user.userId.toString()) {
+      return res.status(403).json({ message: "You can only edit your own bookings" });
+    }
+
+    // Only allow editing confirmed bookings
+    if (booking.status !== "Confirmed") {
+      return res.status(400).json({ message: "Only confirmed bookings can be edited" });
+    }
+
+    // Update fields
+    if (checkInDate) booking.checkInDate = new Date(checkInDate);
+    if (checkOutDate) booking.checkOutDate = new Date(checkOutDate);
+    if (guestName) booking.guestName = guestName;
+    if (guestPhone) booking.guestPhone = guestPhone;
+    if (specialRequests !== undefined) booking.specialRequests = specialRequests;
+
+    await booking.save();
+
+    // Re-populate room info
+    const updatedBooking = await Booking.findById(id).populate('roomId');
+
+    res.status(200).json({
+      message: "Booking updated successfully",
+      booking: updatedBooking
+    });
+  } catch (error) {
+    console.error("Update booking error:", error);
+    res.status(500).json({ message: "Failed to update booking", error: error.message });
+  }
+};
+
+// Cancel a booking
+const cancelBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const booking = await Booking.findById(id);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Check ownership
+    if (booking.userId.toString() !== req.user.userId.toString()) {
+      return res.status(403).json({ message: "You can only cancel your own bookings" });
+    }
+
+    // Only allow cancelling confirmed bookings
+    if (booking.status !== "Confirmed") {
+      return res.status(400).json({ message: "Only confirmed bookings can be cancelled" });
+    }
+
+    // Update booking status
+    booking.status = "Cancelled";
+    await booking.save();
+
+    // Update room status back to Available
+    const room = await Room.findById(booking.roomId);
+    if (room) {
+      room.status = "Available";
+      await room.save();
+    }
+
+    res.status(200).json({
+      message: "Booking cancelled successfully",
+      booking
+    });
+  } catch (error) {
+    console.error("Cancel booking error:", error);
+    res.status(500).json({ message: "Failed to cancel booking", error: error.message });
+  }
+};
+
 module.exports = {
-  createBooking
+  createBooking,
+  getMyBookings,
+  updateBooking,
+  cancelBooking
 };
